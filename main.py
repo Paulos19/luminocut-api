@@ -45,6 +45,13 @@ configured_origins = [o.strip() for o in cors_origins_raw.split(",") if o.strip(
 known_origins = [
     "https://luminocut.phdev.top",
     "http://luminocut.phdev.top",
+    "https://luminocut.phdev.com",
+    "http://luminocut.phdev.com",
+    "https://luminocut-api.phdev.top",
+    "http://luminocut-api.phdev.top",
+    "https://luminocut-api.phdev.com",
+    "http://luminocut-api.phdev.com",
+    "https://services-luminocut-backend.khdya3.easypanel.host",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]

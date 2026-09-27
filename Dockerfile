@@ -26,8 +26,12 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Pré-carregar o modelo principal (isnet-anime) para resposta instantânea no boot
-RUN python -c "import rembg; print('[DOCKER BUILD] Baixando modelo isnet-anime...'); rembg.new_session('isnet-anime'); print('[DOCKER BUILD] Modelo carregado!')"
+# Limitar threads para contenção de RAM em VPS
+ENV OMP_NUM_THREADS=2
+ENV ONNX_NUM_THREADS=2
+
+# Pré-carregar os modelos essenciais no build (evita download pesado em tempo de execução)
+RUN python -c "import rembg; print('[DOCKER BUILD] Baixando isnet-anime e u2net_human_seg...'); rembg.new_session('isnet-anime'); rembg.new_session('u2net_human_seg'); print('[DOCKER BUILD] Modelos em cache!')"
 
 # Copiar código-fonte da aplicação
 COPY . .
