@@ -1,11 +1,11 @@
 import io
 import time
-from typing import Dict
+from typing import Dict, Any, Tuple
 from PIL import Image
 import rembg
 
 # Cache de sessões de modelos para evitar recarregar da memória
-_SESSIONS: Dict[str, rembg.BaseSession] = {}
+_SESSIONS: Dict[str, Any] = {}
 
 SUPPORTED_MODELS = {
     "isnet-anime": "ISNet Anime & Arte (Perfeito para ilustrações, capuzes, roupas claras e traços 2D/3D)",
@@ -15,7 +15,7 @@ SUPPORTED_MODELS = {
     "silueta": "Silueta (Leve e ultra-rápido para testes instantâneos)"
 }
 
-def get_session(model_name: str = "isnet-anime") -> rembg.BaseSession:
+def get_session(model_name: str = "isnet-anime") -> Any:
     """Retorna uma sessão do modelo rembg em cache ou inicializa uma nova."""
     if model_name not in SUPPORTED_MODELS:
         model_name = "isnet-anime"
