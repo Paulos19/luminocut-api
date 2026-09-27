@@ -37,17 +37,38 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Habilitar CORS para o frontend Next.js
+# Habilitar CORS para o frontend Next.js (Local e Produção)
 cors_origins_raw = os.getenv("CORS_ORIGINS", "*")
-allow_origins = [o.strip() for o in cors_origins_raw.split(",")] if cors_origins_raw != "*" else ["*"]
+configured_origins = [o.strip() for o in cors_origins_raw.split(",") if o.strip()]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allow_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Lista de origens explicitamente confiáveis
+known_origins = [
+    "https://luminocut.phdev.top",
+    "http://luminocut.phdev.top",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+all_allowed_origins = list(set(configured_origins + known_origins))
+
+# Starlette CORSMiddleware: Quando allow_credentials=True, wildcard "*" só funciona via regex
+if "*" in configured_origins or cors_origins_raw == "*":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=r"^https?://.*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=all_allowed_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+    )
 
 @app.get("/")
 def root():
